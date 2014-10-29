@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="yuebao_server" default="all">
+  
+  
+  <property file="yuebao_server.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.ear"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <property name="project.jdk.home" value=""/>
+  <property name="project.jdk.bin" value=""/>
+  <property name="project.jdk.classpath" value=""/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.yuebao_server_node_modules.classpath">
+    <pathelement location="${basedir}/node_modules"/>
+  </path>
+  
+  
+  <!-- Global Libraries -->
+  
+  <path id="library.node.js_v0.10.29_core_modules.classpath">
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_debugger.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_linklist.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_stream_duplex.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_stream_passthrough.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_stream_readable.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_stream_transform.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/_stream_writable.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/assert.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/buffer.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/child_process.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/cluster.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/console.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/constants.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/crypto.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/dgram.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/dns.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/domain.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/events.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/freelist.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/fs.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/http.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/https.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/module.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/net.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/os.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/path.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/punycode.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/querystring.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/readline.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/repl.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/stream.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/string_decoder.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/sys.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/timers.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/tls.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/tty.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/url.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/util.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/vm.js"/>
+    <pathelement location="/Users/ben/Library/Caches/IntelliJIdea13/extLibs/nodejs-v0.10.29-src/core-modules-sources/lib/zlib.js"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm4-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  <import file="${basedir}/module_yuebao_server.xml"/>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.yuebao_server" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.yuebao_server" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>

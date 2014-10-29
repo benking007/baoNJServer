@@ -1,0 +1,46 @@
+{
+  "name": "node-smple-cache",
+  "version": "0.0.0",
+  "description": "A simple nodejs cache manager",
+  "main": "Cache.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hh54188/Node-Simple-Cache.git"
+  },
+  "keywords": [
+    "node.js",
+    "cache"
+  ],
+  "author": {
+    "name": "liguangyi"
+  },
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "ef54e76d562180879385316a2237cc3741ba2cf3",
+  "readme": "#How to use\r\n\r\n##Init\r\n\r\n**Cache.createCache([cache algorithm], [cache size])**\r\n\r\n- About cache algorithm: you have two choice \"LRU\" or \"LFU\", of course you can add your own algorithm. If you not sure which algorithm, you can choose the following manage mode.\r\n\r\n```\r\nvar cache = require(\"Cache\");\r\nCache.createCache(\"LRU\", 100 * 100 * 10);\r\n```\r\n\r\n##Set\r\n\r\n**cache.set(key, value[, expire(millisecond)])**\r\n\r\n```\r\ncache.set(\"key\", \"value\", 1000 * 60);\r\n```\r\n\r\n##Get\r\n\r\n**cache.get(key)**\r\n\r\n```\r\ncache.get(\"key\") // value or null\r\n```\r\n\r\n##Clear\r\n\r\n**cache.clear()**\r\n\r\n##Manage Mode\r\n\r\nIf you are not sure which cache replacement algorithm is you need, you can try this model, it will caculate the recently 100 * 100 * 3 `get` hit rate in different algorithm.And according the hit rate choose the higher algorithm one:\r\n\r\n```\r\nvar CacheManage = require(\"./Manage\");\r\nCacheManage.set(\"key\", \"value\", 1000 * 60);\r\n```\r\n\r\n------\r\n\r\n\r\n\r\n\r\n前提有两个，首先你的缓存管理程序是用javascript书写的node.js程序\r\n\r\n为什么需要自己写缓存管理，\r\n\r\n自己写缓存管理的优势在于更快[测试]，\r\n\r\n但劣势也很明显，就是无法做到多进程之间的通信\r\n\r\n你可能说可以使用socket，不错，因为Redis走的就是socket通信\r\n\r\n但这样的代价是会使效率变低\r\n\r\n所以说如果你的缓存管理是独享，只存在于一个node.js进程中，那么可以考虑自己构造一个\r\n\r\n自己写一个缓存管理工具，有一个问题是 如何控制 缓存使用内存空间的大小\r\n\r\n如果在Redis中，你只要进行Config中的maxmemory即可，但是在node.js中，我们没法设定它的运行使用内存大小\r\n\r\n我们可以转向另一个东西，数据条数，通过控制数据条数，来间接控制数据大小，虽然不够准确\r\n\r\n##大纲\r\n\r\n\r\n1. Redis与我写的缓存管理 set操作效率，比较，比较平均每条操作要多少时间/每秒能进行多少操作 （即使是在使用pipline的情况下）\r\n\r\n2. 我自己的缓存算法需要注意的地方\r\n\r\n   - 摒弃数组，使用链表\r\n   - 分离出缓存的索引\r\n   - n与logn 与 delete 操作\r\n\r\n3. 实现最基本的LRU算法\r\n\r\n4. LRU算法的局限性(LFU算法的优势)\r\n\r\n5. 机器学习算法",
+  "_id": "node-smple-cache@0.0.0",
+  "dist": {
+    "shasum": "7a96481daf5e447e0c40ffac1cb68abef627cd66",
+    "tarball": "http://registry.npmjs.org/node-smple-cache/-/node-smple-cache-0.0.0.tgz"
+  },
+  "_from": "node-smple-cache@",
+  "_npmVersion": "1.2.18",
+  "_npmUser": {
+    "name": "hh54188",
+    "email": "juststayinvegas@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "hh54188",
+      "email": "juststayinvegas@gmail.com"
+    }
+  ],
+  "_shasum": "7a96481daf5e447e0c40ffac1cb68abef627cd66",
+  "_resolved": "https://registry.npmjs.org/node-smple-cache/-/node-smple-cache-0.0.0.tgz"
+}

@@ -1,0 +1,17 @@
+//
+   Created by ben on 14-7-1.
+
+extends layout
+block content
+    h1 余额宝助手
+    p 此页面可以计算出当前请求的用户每日余额宝收益，及累计收益
+    p 用户ID：#{deviceid}
+    p 总金额：#{quotient}
+    p 总收益：#{totalincome}
+    p 日收益：#{dailyincome}
+    p 统计日期：#{changedate}
+    p ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+    p 基金代码：#{netvalues.fundcode}
+    p 万份收益：#{netvalues.netvalue}
+    p 七日年化收益率：#{netvalues.totalnetvalue}%
+    p 净值日期：#{netvalues.nvdate}

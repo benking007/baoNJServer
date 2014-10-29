@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_yuebao_server" default="compile.module.yuebao_server">
+  <dirname property="module.yuebao_server.basedir" file="${ant.file.module_yuebao_server}"/>
+  
+  <property name="module.jdk.home.yuebao_server" value=""/>
+  <property name="module.jdk.bin.yuebao_server" value=""/>
+  <property name="module.jdk.classpath.yuebao_server" value=""/>
+  
+  <property name="compiler.args.yuebao_server" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="yuebao_server.output.dir" value="${module.yuebao_server.basedir}/out/production/yuebao_server"/>
+  <property name="yuebao_server.testoutput.dir" value="${module.yuebao_server.basedir}/out/test/yuebao_server"/>
+  
+  <path id="yuebao_server.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="yuebao_server.module.production.classpath">
+    <path refid="library.yuebao_server_node_modules.classpath"/>
+    <path refid="library.node.js_v0.10.29_core_modules.classpath"/>
+  </path>
+  
+  <path id="yuebao_server.runtime.production.module.classpath">
+    <pathelement location="${yuebao_server.output.dir}"/>
+    <path refid="library.yuebao_server_node_modules.classpath"/>
+    <path refid="library.node.js_v0.10.29_core_modules.classpath"/>
+  </path>
+  
+  <path id="yuebao_server.module.classpath">
+    <pathelement location="${yuebao_server.output.dir}"/>
+    <path refid="library.yuebao_server_node_modules.classpath"/>
+    <path refid="library.node.js_v0.10.29_core_modules.classpath"/>
+  </path>
+  
+  <path id="yuebao_server.runtime.module.classpath">
+    <pathelement location="${yuebao_server.testoutput.dir}"/>
+    <pathelement location="${yuebao_server.output.dir}"/>
+    <path refid="library.yuebao_server_node_modules.classpath"/>
+    <path refid="library.node.js_v0.10.29_core_modules.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.yuebao_server">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.yuebao_server">
+    <patternset refid="excluded.from.module.yuebao_server"/>
+  </patternset>
+  
+  
+  <target name="compile.module.yuebao_server" depends="compile.module.yuebao_server.production,compile.module.yuebao_server.tests" description="Compile module yuebao_server"/>
+  
+  <target name="compile.module.yuebao_server.production" depends="register.custom.compilers" description="Compile module yuebao_server; production classes"/>
+  
+  <target name="compile.module.yuebao_server.tests" depends="register.custom.compilers,compile.module.yuebao_server.production" description="compile module yuebao_server; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.yuebao_server" description="cleanup module">
+    <delete dir="${yuebao_server.output.dir}"/>
+    <delete dir="${yuebao_server.testoutput.dir}"/>
+  </target>
+</project>
