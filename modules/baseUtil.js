@@ -4,7 +4,7 @@
 var mysql = require('mysql');
 var util = require('util');
 
-
+/*
 exports.createConnector = function () {
     var conn = mysql.createConnection({
         host: 'localhost',
@@ -16,12 +16,12 @@ exports.createConnector = function () {
     conn.connect();
 
     return conn;
-};
+};*/
 
-/*
+
 exports.createConnector = function () {
     var conn = mysql.createConnection({
-        host: 'yuebaolocal.mysql.rds.aliyuncs.com',
+        host: 'yuebaoserver.mysql.rds.aliyuncs.com',
         user: 'yuebao',
         password: 'benking',
         database: 'yuebao',
@@ -31,7 +31,7 @@ exports.createConnector = function () {
 
     return conn;
 };
- */
+
 
 exports.notNullOrEmpty = function (param) {
     return typeof param != 'undefined' && param != '';
@@ -39,6 +39,15 @@ exports.notNullOrEmpty = function (param) {
 
 exports.getDateString = function () {
     var date = new Date();
+    var dateString = util.format('%s-%s-%s',
+        date.getUTCFullYear(),
+        date.getUTCMonth() + 1,
+        date.getUTCDate());
+
+    return dateString;
+};
+
+exports.getDateString = function (date) {
     var dateString = util.format('%s-%s-%s',
         date.getUTCFullYear(),
         date.getUTCMonth() + 1,
@@ -62,7 +71,7 @@ exports.getDateTimeString = function () {
 
     var dateTimeString = util.format('%s-%s-%s %s:%s:%s',
         date.getUTCFullYear(),
-        date.getUTCMonth() + 1,
+            date.getUTCMonth() + 1,
         date.getUTCDate(),
         date.getHours(),
         date.getMinutes(),
@@ -115,6 +124,47 @@ Date.prototype.format = function(format){
         }
     }
     return format;
+}
+
+//+---------------------------------------------------
+//| 取得日期数据信息
+//| 参数 interval 表示数据类型
+//| y 年 m月 d日 w星期 ww周 h时 n分 s秒
+//+---------------------------------------------------
+Date.prototype.DatePart = function(interval)
+{
+    var myDate = this;
+    var partStr='';
+    var Week = ['日','一','二','三','四','五','六'];
+    switch (interval)
+    {
+        case 'y' :partStr = myDate.getFullYear();break;
+        case 'm' :partStr = myDate.getMonth()+1;break;
+        case 'd' :partStr = myDate.getDate();break;
+        case 'w' :partStr = Week[myDate.getDay()];break;
+        case 'ww' :partStr = myDate.WeekNumOfYear();break;
+        case 'h' :partStr = myDate.getHours();break;
+        case 'n' :partStr = myDate.getMinutes();break;
+        case 's' :partStr = myDate.getSeconds();break;
+    }
+    return partStr;
+}
+
+//+---------------------------------------------------
+//| 日期计算
+//+---------------------------------------------------
+Date.prototype.DateAdd = function(strInterval, Number) {
+    var dtTmp = this;
+    switch (strInterval) {
+        case 's' :return new Date(Date.parse(dtTmp) + (1000 * Number));
+        case 'n' :return new Date(Date.parse(dtTmp) + (60000 * Number));
+        case 'h' :return new Date(Date.parse(dtTmp) + (3600000 * Number));
+        case 'd' :return new Date(Date.parse(dtTmp) + (86400000 * Number));
+        case 'w' :return new Date(Date.parse(dtTmp) + ((86400000 * 7) * Number));
+        case 'q' :return new Date(dtTmp.getFullYear(), (dtTmp.getMonth()) + Number*3, dtTmp.getDate(), dtTmp.getHours(), dtTmp.getMinutes(), dtTmp.getSeconds());
+        case 'm' :return new Date(dtTmp.getFullYear(), (dtTmp.getMonth()) + Number, dtTmp.getDate(), dtTmp.getHours(), dtTmp.getMinutes(), dtTmp.getSeconds());
+        case 'y' :return new Date((dtTmp.getFullYear() + Number), dtTmp.getMonth(), dtTmp.getDate(), dtTmp.getHours(), dtTmp.getMinutes(), dtTmp.getSeconds());
+    }
 }
 
 
@@ -186,20 +236,6 @@ global.__aryFunds = [
     {fundcode:'000397', name:'理财通-汇添富', fundname:'汇添富全额宝'},
     {fundcode:'000575', name:'掌柜钱包', fundname:'兴全添利货币'}
 ];
-
-global.__aryCurrStocks = {
-    s_sh000300 : {
-        stockcode : 'sh000300',
-        hqtime : '1900-1-1',
-        price : 1,
-        priceofyestory : 1,
-        priceoftoday : 1,
-        priceofhighvalue : 1,
-        priceoflowvalue : 1,
-        risenum : 1,
-        risepercent : 0.1
-    }
-};
 
 global.__aryDailyIncomeSqlQueue = [];
 global.__insertExecuting = false;

@@ -14,6 +14,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var myFunds = require('./routes/myFunds');
 var netValues = require('./routes/netValues');
+var guess = require('./routes/gameGuess');
 var mod_netValues = require('./modules/netValues');
 var mod_myFunds = require('./modules/myFunds');
 
@@ -53,6 +54,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/myfunds', myFunds);
 app.use('/netvalues', netValues);
+app.use('/guess', guess);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
