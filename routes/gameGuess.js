@@ -5,8 +5,12 @@
 var express = require('express');
 var security = require('./security.js');
 var guess = require('../modules/gameGuess.js');
+var base = require('../modules/baseUtil.js');
+var cache = require("./sample-cache/Cache.js");
 var router = express.Router();
 var dotest = true;
+
+global._infocache = cache.createCache("LRU", 100 * 100 * 10);
 
 router.get('/getLatestTradeDay', function(req, res) {
 
@@ -18,7 +22,7 @@ router.get('/getLatestTradeDay', function(req, res) {
         res.send(guess.getLatestTradeDay());
     }
     else {
-        res.send('error');
+        base.handleError({message:'访问异常'}, res);
     }
 });
 
@@ -32,7 +36,7 @@ router.get('/getChipinTradeDay', function(req, res) {
         res.send(guess.getChipinTradeDay());
     }
     else {
-        res.send('error');
+        base.handleError({message:'访问异常'}, res);
     }
 });
 
@@ -47,7 +51,7 @@ router.get('/getMyInfo', function(req, res) {
         guess.getMyInfo(_deviceid, res);
     }
     else {
-        res.send('error');
+        base.handleError({message:'访问异常'}, res);
     }
 });
 
@@ -65,7 +69,20 @@ router.get('/dochipin', function(req, res) {
         guess.doChipin(_deviceid, _chipday, _money, _chipdirect, res);
     }
     else {
-        res.send('error');
+        base.handleError({message:'访问异常'}, res);
+    }
+});
+
+router.get('/getCoinPoolInfo', function(req, res) {
+    var _timestamp = req.param('timestamp');
+    var _signkey = req.param('signkey');
+    var _params = 'timestamp=' + _timestamp;
+
+    if (dotest || security.checkSecurity(_params, _signkey, _timestamp)) {
+        guess.getCoinPoolInfo(global._infocache, res);
+    }
+    else {
+        base.handleError({message:'访问异常'}, res);
     }
 });
 

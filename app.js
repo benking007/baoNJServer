@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 //新增加 @2014-07-21
-var lusca = require('lusca');
 var compression = require('compression');
 var cookieSession = require('cookie-session')
 
@@ -38,17 +37,6 @@ app.use(compression());
 app.use(cookieSession({
     keys: ['baobao_s1', 'baobao_s2']
 }))
-
-
-//防止csrf攻击
-//app.use(lusca({
-//    csrf: true,
-//    csp: { /* ... */},
-//    xframe: 'SAMEORIGIN',
-//    p3p: 'ABCDEF',
-//    hsts: {maxAge: 31536000, includeSubDomains: true},
-//    xssProtection: true
-//}));
 
 app.use('/', routes);
 app.use('/users', users);

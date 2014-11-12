@@ -80,6 +80,15 @@ exports.getDateTimeString = function () {
     return dateTimeString;
 }
 
+exports.handleError = function(err, res) {
+    res.send([{err : true, message : err.message}]);
+}
+
+
+
+
+//=======================公共函数部分==========================
+
 String.prototype.format = function(args) {
     var result = this;
     if (arguments.length > 0) {

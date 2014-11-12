@@ -10,12 +10,7 @@ var config = require('./gameConfig.js');
 如果今天不是交易日，则往前取1天，直到取到最近一个交易日为止
  */
 exports.getLatestTradeDay = function(){
-    var date = new Date();
-    while (!isTradeDay(date)) {
-        date = date.DateAdd('d', -1);
-    }
-
-    return base.getDateString(date);
+    return getLatestTradeDay();
 };
 
 /*
@@ -26,7 +21,7 @@ exports.getLatestTradeDay = function(){
 当然，如果今天的时间已经超过13点，则直接求下一个交易日
  */
 exports.getChipinTradeDay = function() {
-    return getChipinTradeDay();
+    return getChipinTradeDay(13);
 };
 
 /*
@@ -51,12 +46,12 @@ function isTradeDay(date) {
     return true;
 }
 
-function getChipinTradeDay() {
+function getChipinTradeDay(splittime) {
     var date = new Date();
     if (isTradeDay(date)) {
         var h = date.DatePart('h');
         var m = date.DatePart('n');
-        if (h < 13) {
+        if (h < splittime) {
             return base.getDateString(date);
         }
     }
@@ -70,6 +65,14 @@ function getChipinTradeDay() {
     return base.getDateString(date);
 }
 
+function getLatestTradeDay() {
+    var date = new Date();
+    while (!isTradeDay(date)) {
+        date = date.DateAdd('d', -1);
+    }
+
+    return base.getDateString(date);
+}
 
 /*
 获取用户信息
@@ -91,8 +94,11 @@ exports.getMyInfo = function(deviceid, res) {
 
         conn.query('SELECT direct,money,tradedate,state,winmoney FROM game_mainguess WHERE deviceid=? AND tradedate=?',
             params, function (err, rows, fields) {
-                if (rows && rows.length > 0) {
+                if (err) {
+                    return base.handleError({message:'获取竞猜记录出错'}, res);
+                }
 
+                if (rows.length > 0) {
 
                     var item = rows[0];
                     direct = item['direct'];
@@ -104,6 +110,10 @@ exports.getMyInfo = function(deviceid, res) {
 
                 conn.query('SELECT money, frazemoney FROM game_score WHERE deviceid=?',
                     [deviceid], function(err, rows, fields) {
+                        if (err) {
+                            return base.handleError({message:'获取用户信息出错'}, res);
+                        }
+
                         if (rows && rows.length > 0) {
                             var item = rows[0];
                             var results = [{
@@ -145,120 +155,137 @@ exports.doChipin = function(deviceid, chipday, money, chipdirect, res) {
         conn.query('SELECT money,frazemoney FROM game_score WHERE deviceid=?',
             [deviceid], function(err, rows, fields) {
                 if(err) {
-                    res.send([
-                        { err: err.code}
-                    ]);
-                    conn.end();
+                    return base.handleError({message:'查询可用金币出错'}, res);
                 } else {
 
-                    if (rows.length > 0) {
-                        var balance = rows[0]['money'];
-                        var frazemoney = rows[0]['frazemoney'];
-
-                        //如果余额充足，扣减余额，并执行竞猜买入，需要事务保证
-                        if (balance >= money) {
-                            conn.beginTransaction(function (err) {
-
-                                if (err) {
-                                    res.send([
-                                        { err: '999', message : '系统错误'}
-                                    ]);
-                                } else {
-                                    //更新余额
-                                    conn.query('UPDATE game_score SET money=? WHERE deviceid=?',
-                                        [balance - money , deviceid], function (err, rows, fields) {
-
-                                            if (err) {
-                                                conn.rollback(function () {
-                                                    res.send([
-                                                        { err: '999', message : '系统错误'}
-                                                    ]);
-                                                });
-                                            } else {
-                                                //插入消费记录
-                                                conn.query('INSERT INTO game_scoredetails SET ?',
-                                                    {
-                                                        deviceid: deviceid,
-                                                        money: money,
-                                                        opttype: 3,
-                                                        state: 0,
-                                                        addtime: base.getDateTimeString()
-                                                    }, function (err, rows, fields) {
-
-                                                        if (err) {
-                                                            conn.rollback(function () {
-                                                                res.send([
-                                                                    { err: '999', message : '系统错误'}
-                                                                ]);
-                                                            });
-                                                        } else {
-                                                            //插入竞猜记录
-                                                            conn.query('INSERT INTO game_mainguess SET ?',
-                                                                {
-                                                                    deviceid: deviceid,
-                                                                    direct: chipdirect,
-                                                                    money: money,
-                                                                    tradedate: chipday,
-                                                                    state: 0,
-                                                                    chipintime: base.getDateTimeString(),
-                                                                    winmoney: 0
-                                                                }, function (err, rows, fields) {
-
-                                                                    if (err) {
-                                                                        conn.rollback(function () {
-                                                                            res.send([
-                                                                                { err: '999', message : '系统错误'}
-                                                                            ]);
-                                                                        });
-                                                                    } else {
-                                                                        conn.commit(function (err) {
-                                                                            if (err) {
-                                                                                conn.rollback(function () {
-                                                                                    res.send([
-                                                                                        { err: '999', message : '系统错误'}
-                                                                                    ]);
-                                                                                })
-                                                                            }
-                                                                        });
-
-                                                                        var results = [{
-                                                                            chipdirect  :chipdirect,
-                                                                            chipmoney   :money,
-                                                                            chipday     :chipday,
-                                                                            chipstate   :0,
-                                                                            chipwinmoney:0,
-                                                                            money       :balance-money,
-                                                                            frazemoney  :frazemoney
-                                                                        }];
-
-                                                                        res.send(results);
-                                                                        conn.end();
-                                                                    }
-                                                                });
-                                                        }
-                                                    });
-                                            }
-
-                                        });
-                                }
-                            });
-
-                        } else {
-                            res.send([
-                                { err: '001', message : '金币余额不足'}
-                            ]);
-                            conn.end();
-                        }
-
+                    if (!rows || rows.length == 0 || rows[0]['money'] < money) {
+                        return base.handleError({message:'余额不足'}, res);
                     } else {
-                        res.send([
-                            { err: '001', message : '金币余额不足'}
-                        ]);
-                        conn.end();
+                        var balance = rows[0]['money'];
+                        conn.beginTransaction(function (err) {
+                            if (err) {
+                                return base.handleError({message:'系统错误'}, res);
+                            } else {
+                                //更新余额
+                                conn.query('UPDATE game_score SET money=? WHERE deviceid=?',
+                                    [balance - money , deviceid], function (err, rows, fields) {
+                                        if (err) {
+                                            conn.rollback(function () {
+                                                return base.handleError({message:'消费金币出错'}, res);
+                                            });
+                                        } else {
+                                            //插入消费记录
+                                            conn.query('INSERT INTO game_scoredetails SET ?',
+                                                {
+                                                    deviceid: deviceid,
+                                                    money: money,
+                                                    opttype: 3,
+                                                    state: 0,
+                                                    addtime: base.getDateTimeString()
+                                                }, function (err, rows, fields) {
+
+                                                    if (err) {
+                                                        conn.rollback(function () {
+                                                            return base.handleError({message:'新增消费记录出错'}, res);
+                                                        });
+                                                    } else {
+                                                        //插入竞猜记录
+                                                        conn.query('INSERT INTO game_mainguess SET ?',
+                                                            {
+                                                                deviceid: deviceid,
+                                                                direct: chipdirect,
+                                                                money: money,
+                                                                tradedate: chipday,
+                                                                state: 0,
+                                                                chipintime: base.getDateTimeString(),
+                                                                winmoney: 0
+                                                            }, function (err, rows, fields) {
+
+                                                                if (err) {
+                                                                    conn.rollback(function () {
+                                                                        return base.handleError({message:'新增下注出错'}, res);
+                                                                    });
+                                                                } else {
+                                                                    conn.commit(function (err) {
+                                                                        if (err) {
+                                                                            conn.rollback(function () {
+                                                                                return base.handleError({message:'提交下注出错'}, res);
+                                                                            })
+                                                                        } else {
+                                                                            var results = [{
+                                                                                chipdirect  :chipdirect,
+                                                                                chipmoney   :money,
+                                                                                chipday     :chipday,
+                                                                                chipstate   :0,
+                                                                                chipwinmoney:0,
+                                                                                money       :balance-money,
+                                                                                frazemoney  :0
+                                                                            }];
+
+                                                                            res.send(results);
+                                                                            conn.end();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                    }
+                                                });
+                                        }
+                                    });
+                            }
+                        });
                     }
                 }
-
             });
-
     }
+}
+
+exports.getCoinPoolInfo = function(infocache, res) {
+    var tradeDate = getChipinTradeDay(15);
+
+    var results = infocache.get('poolinfo');
+    if (results) {
+        res.send(results);
+        return;
+    };
+
+    var risemoney = 0;
+    var downmoney = 0;
+    var conn = base.createConnector();
+    conn.query('SELECT sum(money) as risemoney FROM game_mainguess WHERE direct=1 AND tradedate=?',
+        [tradeDate], function(err, rows, fields) {
+            if (err) {
+                return base.handleError({message:'查询奖池出错'}, res);
+            }  else  {
+                if (rows && rows.length > 0) {
+                    risemoney = rows[0]['risemoney'];
+                }
+
+                conn.query('SELECT sum(money) as downmoney FROM game_mainguess WHERE direct=0 AND tradedate=?',
+                    [tradeDate], function(err, rows, fields) {
+                        if (err) {
+                            return base.handleError({message:'查询奖池出错'}, res);
+                        } else {
+                            if (rows && rows.length > 0) {
+                                downmoney = rows[0]['downmoney'];
+                            }
+
+                            var totalmoney = risemoney + downmoney;
+                            var results = [{
+                                tradedate : tradeDate,
+                                risemoney : risemoney,
+                                downmoney : downmoney,
+                                totalmoney : totalmoney,
+                                risepercent : risemoney/totalmoney*100,
+                                downpercent : downmoney/totalmoney*100
+                            }];
+
+                            infocache.set('poolinfo', results, 1000 * 60 * 5);
+
+                            res.send(results);
+                            conn.end();
+                        }
+                    });
+            }
+        });
 }
